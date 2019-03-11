@@ -1,0 +1,19 @@
+{
+  "name": "pideloapp-comportamientousuario",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackadress/comportamiento-usuario.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blackadress/comportamiento-usuario/issues"
+  },
+  "homepage": "https://github.com/blackadress/comportamiento-usuario#readme"
+}
