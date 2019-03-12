@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "babel-node": "babel-node src/index.js",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "build": "./node_modules/.bin/babel src --outdir dist",
+    "start": "node dist/index.js",
+    "syncdb": "babel-node src/syncDB.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +20,18 @@
   "bugs": {
     "url": "https://github.com/blackadress/comportamiento-usuario/issues"
   },
-  "homepage": "https://github.com/blackadress/comportamiento-usuario#readme"
+  "homepage": "https://github.com/blackadress/comportamiento-usuario#readme",
+  "dependencies": {
+    "consign": "^0.1.6",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.19"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "jest": "^24.4.0",
+    "nodemon": "^1.18.10"
+  }
 }
