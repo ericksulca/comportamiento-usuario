@@ -1,7 +1,6 @@
-module.exports = app => {
-
+export default app => {
   app.route('/')
     .get((req, res) => {
-      res.json({'msj': 'Hola desde express'})
+      res.json({'msj': 'claro q si camaron'})
     })
 }
