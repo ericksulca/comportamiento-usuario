@@ -1,6 +1,5 @@
 import Cliente from '../models/cliente'
 
-
 export default app => {
   app.route('/cliente-comportamiento/')
     .get((req, res) => {
@@ -9,11 +8,12 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
+      const { id, nombre, clicks, tags } = req.body
       let cliente = new Cliente({
-        id: req.body.id,
-        nombre: req.body.nombre,
-        clicks: req.body.clicks,
-        tags: req.body.tags
+        id: id,
+        nombre: nombre,
+        clicks: clicks,
+        tags: tags
       })
       cliente.save()
         .then(result => res.json(result))
@@ -22,7 +22,8 @@ export default app => {
 
   app.route('/cliente-comportamiento/:id')
     .get((req, res) => {
-      Cliente.findOne({ id: req.params.id }).exec()
+      const { id } = req.params
+      Cliente.findOne({ id: id }).exec()
         .then(result => res.json(result))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
@@ -31,46 +32,51 @@ export default app => {
     * y/o con un solo objeto "clicks" 
     */
     .put((req, res) => {
-      if (req.body.clicks && !req.body.tags) {
+      const id = req.params.id
+      const clicksObj = req.body.clicks
+      const tagsObj = req.body.tags
+
+      if (clicksObj && !tagsObj) {
+        const { nombreObjeto, cantidad } = clicksObj[0]
         Cliente.findOne({
-          "id": req.params.id,
-          "clicks.nombreObjeto": req.body.clicks.nombreObjeto
+          "id": id,
+          "clicks.nombreObjeto": nombreObjeto
         }).exec()
           .then(result => {
-            // BUG no entra al if a pesar de que nombre objeto es correcto
             if (result) {
               Cliente.update(
-                { "id": req.params.id , "clicks.nombreObjeto": req.body.clicks.nombreObjeto },
-                { $inc: { "clicks.$.cantidad": req.body.clicks.cantidad } }
+                { "id": id , "clicks.nombreObjeto": nombreObjeto },
+                { $inc: { "clicks.$.cantidad": cantidad } }
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
               Cliente.update(
-                { "id": req.params.id },
-                { $push: { clicks: req.body.clicks } }
+                { "id": id },
+                { $push: { clicks: clicksObj } }
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             }
           })
-      } else if (!req.body.clicks && req.body.tags) {
+      } else if (!clicksObj && tagsObj) {
+        const { nombreTag, puntuacion } = tagsObj[0]
         Cliente.findOne({
-          "id": req.params.id,
-          "tags.nombreTag": req.body.tags.nombreTag
+          "id": id,
+          "tags.nombreTag": nombreTag
         }).exec()
           .then(result => {
             if (result) {
               Cliente.update(
-                { "id": req.params.id, "tags.nombreTag": req.body.tags.nombreTag },
-                { $set: { "tags.$.puntuacion": req.body.tags.puntuacion }}
+                { "id": req.params.id, "tags.nombreTag": nombreTag },
+                { $set: { "tags.$.puntuacion": puntuacion }}
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
               Cliente.update(
-                { "id": req.params.id },
-                { $push: { tags: req.body.tags } }
+                { "id": id },
+                { $push: { tags: tagsObj } }
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
@@ -82,7 +88,8 @@ export default app => {
       */
     })
     .delete((req, res) => {
-      Cliente.deleteOne({ id: req.params.id }).exec()
+      const { id } = req.params
+      Cliente.deleteOne({ id: id }).exec()
         .then(() => res.sendStatus(204))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
