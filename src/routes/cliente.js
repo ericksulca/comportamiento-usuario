@@ -37,6 +37,7 @@ export default app => {
           "clicks.nombreObjeto": req.body.clicks.nombreObjeto
         }).exec()
           .then(result => {
+            // BUG no entra al if a pesar de que nombre objeto es correcto
             if (result) {
               Cliente.update(
                 { "id": req.params.id , "clicks.nombreObjeto": req.body.clicks.nombreObjeto },
