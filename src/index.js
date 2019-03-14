@@ -66,6 +66,16 @@ wssClient.on('connection', (socket, request) => {
   console.log('Conexion establecida para usuario', userId)
 })
 
+
+app.get('/new/:user_id', (req, res) => {
+  let userId = req.params.user_id
+  let socket = userSockets[userId]
+  if (typeof(socket) !== 'undefined') {
+    socket.send('')
+  }
+  res.send("")
+})
+
 // server listening
 server.listen(PORT, () => {
   console.log("Aplicacion corriendo en puerto:", PORT)
