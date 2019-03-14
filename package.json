@@ -24,7 +24,8 @@
   "dependencies": {
     "consign": "^0.1.6",
     "express": "^4.16.4",
-    "mongoose": "^5.4.19"
+    "mongoose": "^5.4.19",
+    "ws": "^6.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
