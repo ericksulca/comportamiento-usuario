@@ -67,11 +67,14 @@ wssClient.on('connection', (socket, request) => {
 })
 
 
-app.get('/new/:user_id', (req, res) => {
+app.get('/nuevo/:user_id', (req, res) => {
   let userId = req.params.user_id
   let socket = userSockets[userId]
+  // console.log('socket', socket)
+  console.log('conectado a /new/', userId)
   if (typeof(socket) !== 'undefined') {
     socket.send('')
+    console.log('enviado')
   }
   res.send("")
 })
