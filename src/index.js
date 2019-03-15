@@ -1,17 +1,11 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
-import ws from 'ws'
 
-import url from 'url'
 import http from 'http'
 
 // Importando configuraciones de la BD
 import configDB from './libs/configDB'
-
-// Importando rutas
-import rutaHome from './routes/home'
-import rutaCliente from './routes/cliente'
 
 const PORT = process.env.PORT || 3000
 let app = express()
@@ -30,54 +24,20 @@ mongoose.connect(configDB.url + configDB.database, configDB.params)
 
 let db = mongoose.connection
 
+
+// Importando rutas
+import rutaHome from './routes/home'
+import rutaCliente from './routes/cliente'
+import rutaClienteWS from './routes/clienteWS'
+
 // RUTAS
 rutaHome(app)
 rutaCliente(app)
 
-// WEB SOCKETS SERVER
 let server = http.Server(app)
 
-let wssClient = new ws.Server({
-  server: server,
-  path: '/client'
-})
-
-function noop() {}
-function heartbeat() {
-  this.isAlive = true
-}
-const clientInterval = setInterval(function ping() {
-  wssClient.clients.forEach(ws => {
-    if (ws.isAlive === false) return ws.terminate()
-    ws.isAlive = false
-    ws.ping(noop)
-  })
-}, 30000)
-
-let userSockets = {}
-
-wssClient.on('connection', (socket, request) => {
-  socket.isAlive = true
-  socket.on('pong', heartbeat)
-
-  const parameters = url.parse(request.url, true)
-  const userId = parameters.query.user_id
-  userSockets[userId] = socket
-  console.log('Conexion establecida para usuario', userId)
-})
-
-
-app.get('/nuevo/:user_id', (req, res) => {
-  let userId = req.params.user_id
-  let socket = userSockets[userId]
-  // console.log('socket', socket)
-  console.log('conectado a /new/', userId)
-  if (typeof(socket) !== 'undefined') {
-    socket.send('')
-    console.log('enviado')
-  }
-  res.send("")
-})
+// WEB SOCKETS SERVER CLIENTE
+rutaClienteWS(app, server)
 
 // server listening
 server.listen(PORT, () => {
