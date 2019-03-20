@@ -47,8 +47,9 @@ export default (app, server) => {
       console.log('get', userId)
       if (typeof(socket) !== 'undefined') {
         socket.send('mensaje de prueba')
+      } else {
+        res.status(204).json({ mensaje: 'exito' })
       }
-      res.status(204).json({ mensaje: 'exito' })
     })
     .post((req, res) => {
       const userId = req.params.user_id
@@ -59,8 +60,9 @@ export default (app, server) => {
         socket.send(JSON.stringify(req.body))
         console.log('si funciona')
         res.status(204).json({ mensaje: 'exito' })
+      } else {
+        res.status(404).json({ mensaje: 'fracaso' })
       }
-      res.status(404).json({ mensaje: 'fracaso' })
     })
 
   app.route('/ubicacion-repartidores/')
