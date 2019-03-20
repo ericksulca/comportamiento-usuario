@@ -53,10 +53,11 @@ export default (app, server) => {
     })
     .post((req, res) => {
       const userId = req.params.user_id
-      console.log("post", userId)
+      console.log("post a usuario", userId)
+      console.log(req.body)
       let socket = userSockets[userId]
-      console.log(typeof(socket))
-      if (typeof(socket) !== 'undefined') {
+      // console.log(typeof(socket))
+      if (typeof(socket) !== 'undefined' && socket.readyState === ws.OPEN) {
         socket.send(JSON.stringify(req.body))
         console.log('si funciona')
         res.status(204).json({ mensaje: 'exito' })
@@ -68,13 +69,20 @@ export default (app, server) => {
   app.route('/ubicacion-repartidores/')
     .post((req, res) => {
       const sockets = userSockets
-      sockets
-        .filter(socket => typeof(socket) !== 'undefined')
-        .map(validSocket => {
-          validSocket.send(JSON.stringify(req.body))
-          console.log('funciona')
+      console.log(Object.keys(sockets))
+      let result = Object.values(sockets)
+      if (result) {
+        result
+          .filter(socket => typeof(socket) !== 'undefined')
+          .map(validSocket => {
+            console.log(req.body)
+            validSocket.send(JSON.stringify(req.body))
+            console.log('exito')
+          })
           res.status(204).json({ mensaje: 'exito'})
-        })
+      } else {
+        console.log('fail')
         res.status(404).json({ mensaje: 'fracaso' })
+      }
     })
 }
