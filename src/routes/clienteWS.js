@@ -17,13 +17,16 @@ export default (app, server) => {
     this.isAlive = true
   }
 
-  const clientInterval = setInterval(function ping() {
+  setInterval(function ping() {
     wssClient.clients.forEach(ws => {
-      if (ws.isAlive === false) return ws.terminate()
+      if (!ws.isAlive) {
+        // AGREGAR CODIGO PARA QUITAR AL SOCKET DE LA LISTA DE SOCKETS
+        return ws.terminate()
+      }
       ws.isAlive = false
       ws.ping(noop)
     })
-  }, 30000)
+  }, 10000)
 
   let userSockets = {}
 
