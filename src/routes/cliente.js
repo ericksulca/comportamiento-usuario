@@ -8,12 +8,13 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
-      const { id, nombre, clicks, tags } = req.body
+      const { id, nombre, clicks, tags, productos } = req.body
       let cliente = new Cliente({
         id: id,
         nombre: nombre,
         clicks: clicks,
-        tags: tags
+        tags: tags,
+        productos: productos
       })
       cliente.save()
         .then(result => res.json(result))
@@ -29,14 +30,20 @@ export default app => {
     })
     /*
     * Solo se puede recibir request con un solo objeto "tags" 
-    * y/o con un solo objeto "clicks" 
+    * y/o con un solo objeto "clicks"
+    * y/o con un solo objeto "productos"
     */
     .put((req, res) => {
       const id = req.params.id
       const clicksObj = req.body.clicks
       const tagsObj = req.body.tags
+      const productosObj = req.body.productos
 
-      if (clicksObj && !tagsObj) {
+      console.log("clicksObj:", clicksObj)
+      console.log("tags:", tagsObj)
+      console.log("productos", productosObj)
+
+      if (clicksObj && !tagsObj && !productosObj) {
         const { nombreObjeto, cantidad } = clicksObj[0]
         Cliente.findOne({
           "id": id,
@@ -44,14 +51,14 @@ export default app => {
         }).exec()
           .then(result => {
             if (result) {
-              Cliente.update(
+              Cliente.updateOne(
                 { "id": id , "clicks.nombreObjeto": nombreObjeto },
                 { $inc: { "clicks.$.cantidad": cantidad } }
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
-              Cliente.update(
+              Cliente.updateOne(
                 { "id": id },
                 { $push: { clicks: clicksObj } }
               ).exec()
@@ -59,7 +66,7 @@ export default app => {
                 .catch(err => res.status(412).json({ msg: err.message }))
             }
           })
-      } else if (!clicksObj && tagsObj) {
+      } else if (!clicksObj && tagsObj && !productosObj) {
         const { nombreTag, puntuacion } = tagsObj[0]
         Cliente.findOne({
           "id": id,
@@ -67,9 +74,9 @@ export default app => {
         }).exec()
           .then(result => {
             if (result) {
-              Cliente.update(
-                { "id": req.params.id, "tags.nombreTag": nombreTag },
-                { $set: { "tags.$.puntuacion": puntuacion }}
+              Cliente.updateOne(
+                { "id": id, "tags.nombreTag": nombreTag },
+                { $set: { "tags.$.puntuacion": puntuacion } }
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
@@ -77,6 +84,33 @@ export default app => {
               Cliente.update(
                 { "id": id },
                 { $push: { tags: tagsObj } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            }
+          })
+      } else if (!clicksObj && !tagsObj && productosObj) {
+        const { productoId, puntuacion } = productosObj[0]
+        Cliente.findOne({
+          "id": id,
+          "productos.productoId": productoId
+        }).exec()
+          .then(result => {
+            if (result) {
+              console.log('resultado producto')
+              console.log(productoId, puntuacion)
+              Cliente.updateOne(
+                {"id": id, "productos.productoId": productoId },
+                { $set: { "productos.$.puntuacion": puntuacion } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            } else {
+              console.log('no resultado producto')
+              console.log(productoId, puntuacion)
+              Cliente.updateOne(
+                { "id": id },
+                { $push: { productos: productosObj } }
               ).exec()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))

@@ -4,7 +4,8 @@ const ClienteSchema = new mongoose.Schema({
   id: Number,
   nombre: String,
   clicks: [{ nombreObjeto: String, cantidad: Number, fecha: { type: Date, default: Date.now } }],
-  tags: [{ nombreTag: String, puntuacion: Number, fechaModificacion: Date }],
+  tags: [{ nombreTag: String, puntuacion: Number }],
+  productos: [{ productoId: Number, puntuacion: Number }],
   fechaCreacion: { type: Date, default: Date.now }
 })
 

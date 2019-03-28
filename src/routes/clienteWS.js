@@ -59,7 +59,7 @@ export default (app, server) => {
       console.log("post a usuario", userId)
       console.log(req.body)
       let socket = userSockets[userId]
-      // console.log(typeof(socket))
+      console.log(typeof(socket))
       if (typeof(socket) !== 'undefined' && socket.readyState === ws.OPEN) {
         socket.send(JSON.stringify(req.body))
         console.log('si funciona')
