@@ -23,6 +23,7 @@
   "homepage": "https://github.com/blackadress/comportamiento-usuario#readme",
   "dependencies": {
     "consign": "^0.1.6",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "mongoose": "^5.4.19",
     "ws": "^6.2.0"

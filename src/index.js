@@ -1,17 +1,16 @@
 import express from 'express'
-import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 
 import http from 'http'
 
-// Importando configuraciones de la BD
+// Importando configuraciones de la BD y middleware
 import configDB from './libs/configDB'
+import middleware from './libs/middleware'
 
 const PORT = process.env.PORT || 3000
 let app = express()
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+middleware(app)
 
 // CONEXION A BASE DE DATOS
 mongoose.connect(configDB.url + configDB.database, configDB.params)
@@ -21,9 +20,6 @@ mongoose.connect(configDB.url + configDB.database, configDB.params)
   .catch(err => {
     console.error('Error en la conexion a la base de datos', err)
   })
-
-let db = mongoose.connection
-
 
 // Importando rutas
 import rutaHome from './routes/home'

@@ -8,17 +8,93 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
-      const { id, nombre, clicks, tags, productos } = req.body
-      let cliente = new Cliente({
-        id: id,
-        nombre: nombre,
-        clicks: clicks,
-        tags: tags,
-        productos: productos
-      })
-      cliente.save()
-        .then(result => res.json(result))
-        .catch(err => res.status(412).json({ msg: err.message }))
+      
+      const id = req.body.id
+      const clicksObj = req.body.clicks
+      const tagsObj = req.body.tags
+      const productosObj = req.body.productos
+
+      if (clicksObj && !tagsObj && !productosObj) {
+        const { nombreObjeto, cantidad } = clicksObj[0]
+        Cliente.findOne({
+          "id": id,
+          "clicks.nombreObjeto": nombreObjeto
+        }).exec()
+          .then(result => {
+            if (result) {
+              Cliente.updateOne(
+                { "id": id , "clicks.nombreObjeto": nombreObjeto },
+                { $inc: { "clicks.$.cantidad": cantidad } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            } else {
+              Cliente.updateOne(
+                { "id": id },
+                { $push: { clicks: clicksObj } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            }
+          })
+      } else if (!clicksObj && tagsObj && !productosObj) {
+        const { nombreTag, puntuacion } = tagsObj[0]
+        Cliente.findOne({
+          "id": id,
+          "tags.nombreTag": nombreTag
+        }).exec()
+          .then(result => {
+            if (result) {
+              Cliente.updateOne(
+                { "id": id, "tags.nombreTag": nombreTag },
+                { $set: { "tags.$.puntuacion": puntuacion } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            } else {
+              Cliente.updateOne(
+                { "id": id },
+                { $push: { tags: tagsObj } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            }
+          })
+      } else if (!clicksObj && !tagsObj && productosObj) {
+        const { productoId, puntuacion } = productosObj[0]
+        Cliente.findOne({
+          "id": id,
+          "productos.productoId": productoId
+        }).exec()
+          .then(result => {
+            if (result) {
+              Cliente.updateOne(
+                {"id": id, "productos.productoId": productoId },
+                { $set: { "productos.$.puntuacion": puntuacion } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            } else {
+              Cliente.updateOne(
+                { "id": id },
+                { $push: { productos: productosObj } }
+              ).exec()
+                .then(result => res.json(result))
+                .catch(err => res.status(412).json({ msg: err.message }))
+            }
+          })
+      } else {
+        let cliente = new Cliente({
+          id: id,
+          clicks: clicksObj,
+          tags: tagsObj,
+          productos: productosObj
+        })
+        cliente.save()
+          .then(result => res.json(result))
+          .catch(err => res.status(412).json({ msg: err.message }))
+      }
+
     })
 
   app.route('/cliente-comportamiento/:id')
@@ -38,10 +114,6 @@ export default app => {
       const clicksObj = req.body.clicks
       const tagsObj = req.body.tags
       const productosObj = req.body.productos
-
-      console.log("clicksObj:", clicksObj)
-      console.log("tags:", tagsObj)
-      console.log("productos", productosObj)
 
       if (clicksObj && !tagsObj && !productosObj) {
         const { nombreObjeto, cantidad } = clicksObj[0]
@@ -97,8 +169,6 @@ export default app => {
         }).exec()
           .then(result => {
             if (result) {
-              console.log('resultado producto')
-              console.log(productoId, puntuacion)
               Cliente.updateOne(
                 {"id": id, "productos.productoId": productoId },
                 { $set: { "productos.$.puntuacion": puntuacion } }
@@ -106,8 +176,6 @@ export default app => {
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
-              console.log('no resultado producto')
-              console.log(productoId, puntuacion)
               Cliente.updateOne(
                 { "id": id },
                 { $push: { productos: productosObj } }
