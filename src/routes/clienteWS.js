@@ -19,8 +19,14 @@ export default (app, server) => {
 
   setInterval(function ping() {
     wssClient.clients.forEach(ws => {
+      console.log(ws.isAlive)
       if (!ws.isAlive) {
-        // AGREGAR CODIGO PARA QUITAR AL SOCKET DE LA LISTA DE SOCKETS
+        let socketTodos = Object.values(userSockets)
+        let arrIds = Object.keys(userSockets)
+        let idx = socketTodos.indexOf(ws)
+        let idxSocket = arrIds[idx]
+        delete userSockets[idxSocket]
+        console.log('socket con index' + idx + 'fue quitado de userSockets' + Object.keys(userSockets))
         return ws.terminate()
       }
       ws.isAlive = false
