@@ -24,8 +24,13 @@
   "dependencies": {
     "consign": "^0.1.6",
     "cors": "^2.8.5",
+    "csv-parse": "^4.3.4",
+    "dataframe-js": "^1.4.1",
+    "dstools": "^0.2.8",
     "express": "^4.16.4",
+    "jsonexport": "^2.4.1",
     "mongoose": "^5.4.19",
+    "node-fetch": "^2.3.0",
     "ws": "^6.2.0"
   },
   "devDependencies": {
