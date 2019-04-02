@@ -1,8 +1,5 @@
-const fs = require('fs')
 const path = require('path')
 
-const fetch = require('node-fetch')
-const parse = require('csv-parse')
 const DataFrame = require('dataframe-js').DataFrame
 
 const prodCSV = path.join(__dirname, 'producto-puntuacion.csv')
