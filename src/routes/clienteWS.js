@@ -2,6 +2,8 @@ import ws from 'ws'
 
 import url from 'url'
 
+import fetch from 'node-fetch'
+
 // SE TIENE QUE VER EL CASO EN EL QUE EL SOCKET NO ESTA ABIERTO
 // SE PUEDE ESPERAR MENSAJES POR EL WEBSOCKET CON EL EVENTO:
 // wssClient.on('message', callbackFunc)
@@ -13,6 +15,7 @@ export default (app, server) => {
   })
 
   function noop() {}
+
   function heartbeat() {
     this.isAlive = true
   }
@@ -26,7 +29,7 @@ export default (app, server) => {
         let idx = socketTodos.indexOf(ws)
         let idxSocket = arrIds[idx]
         delete userSockets[idxSocket]
-        console.log('socket con index' + idx + 'fue quitado de userSockets' + Object.keys(userSockets))
+        console.log('socket con index ' + idx + 'fue quitado de userSockets ' + Object.keys(userSockets))
         return ws.terminate()
       }
       ws.isAlive = false
@@ -39,8 +42,8 @@ export default (app, server) => {
   wssClient.on('connection', (socket, request) => {
     socket.isAlive = true
     socket.on('pong', heartbeat)
-    if (typeof(socket) != 'undefined') {
-      socket.send(JSON.stringify({msg: 'notificacion prueba'}))
+    if (typeof (socket) != 'undefined') {
+      socket.send(JSON.stringify({ msg: 'notificacion prueba' }))
     }
 
     const parameters = url.parse(request.url, true)
@@ -54,7 +57,7 @@ export default (app, server) => {
       const userId = req.params.user_id
       let socket = userSockets[userId]
       console.log('get', userId)
-      if (typeof(socket) !== 'undefined') {
+      if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
         socket.send('mensaje de prueba')
       } else {
         res.status(204).json({ mensaje: 'exito' })
@@ -65,33 +68,51 @@ export default (app, server) => {
       console.log("post a usuario", userId)
       console.log(req.body)
       let socket = userSockets[userId]
-      console.log(typeof(socket))
-      if (typeof(socket) !== 'undefined' && socket.readyState === ws.OPEN) {
+      if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
+        console.log('socket valido y abierto')
         socket.send(JSON.stringify(req.body))
-        console.log('si funciona')
         res.status(204).json({ mensaje: 'exito' })
       } else {
+        console.log('socket no valido o no abierto')
         res.status(404).json({ mensaje: 'fracaso' })
       }
     })
 
   app.route('/ubicacion-repartidores/')
     .post((req, res) => {
-      const sockets = userSockets
-      console.log(Object.keys(sockets))
-      let result = Object.values(sockets)
-      if (result) {
-        result
-          .filter(socket => typeof(socket) !== 'undefined')
-          .map(validSocket => {
-            console.log(req.body)
-            validSocket.send(JSON.stringify(req.body))
-            console.log('exito')
-          })
-          res.status(204).json({ mensaje: 'exito'})
+      const url_superusuarios = 'http://localhost:3000/superusuario/1'
+      fetchSuperusuarios(url_superusuarios)
+        .then(superusuarios => {
+          superusuarios
+            .map(superusuarioId => userSockets[superusuarioId])
+            .filter(socket => typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN)
+            .map(socketValido => {
+              socketValido.send(JSON.stringify(req.body))
+            })
+        })
+        .then(() => res.status(204).json({ mensaje: 'exito' }))
+        .catch(err => res.status(412).json({ mensaje: err.message }))
+    })
+
+  app.route('/ubicacion-repartidor/:clienteId')
+    .post((req, res) => {
+      const clienteId = req.params.clienteId
+      let socket = userSockets[clienteId]
+      if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
+        socket.send(JSON.stringify(req.body))
+        res.status(204).json({ mensaje: 'exito' })
       } else {
-        console.log('fail')
-        res.status(404).json({ mensaje: 'fracaso' })
+        res.status(412).json({ mensaje: 'fracaso' })
       }
     })
+}
+
+const fetchSuperusuarios = async (url) => {
+  let superusuarios = await fetch(url)
+    .then(res => res.json())
+    .catch(err => console.error(err))
+
+  superusuarios = superusuarios[0].superusuarios
+    .map(superusuario => superusuario.id)
+  return superusuarios
 }
