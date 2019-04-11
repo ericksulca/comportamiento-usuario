@@ -42,10 +42,7 @@ export default (app, server) => {
   wssClient.on('connection', (socket, request) => {
     socket.isAlive = true
     socket.on('pong', heartbeat)
-    if (typeof (socket) != 'undefined') {
-      socket.send(JSON.stringify({ msg: 'notificacion prueba' }))
-    }
-
+    
     const parameters = url.parse(request.url, true)
     const userId = parameters.query.user_id
     userSockets[userId] = socket
@@ -68,12 +65,12 @@ export default (app, server) => {
       console.log("post a usuario", userId)
       console.log(req.body)
       let socket = userSockets[userId]
-      if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
+      if (typeof(socket) !== 'undefined' && socket.readyState === ws.OPEN) {
         console.log('socket valido y abierto')
         socket.send(JSON.stringify(req.body))
         res.status(204).json({ mensaje: 'exito' })
       } else {
-        console.log('socket no valido o no abierto')
+        console.log('socket inválido o no abierto')
         res.status(404).json({ mensaje: 'fracaso' })
       }
     })
@@ -98,10 +95,14 @@ export default (app, server) => {
     .post((req, res) => {
       const clienteId = req.params.clienteId
       let socket = userSockets[clienteId]
+      console.log('clienteId', clienteId)
+      console.log(req.body)
       if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
+        console.log('socket valido')
         socket.send(JSON.stringify(req.body))
         res.status(204).json({ mensaje: 'exito' })
       } else {
+        console.log('socket inválido o cerrado')
         res.status(412).json({ mensaje: 'fracaso' })
       }
     })
