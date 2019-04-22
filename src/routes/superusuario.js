@@ -26,7 +26,6 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
-      console.log(req.body)
       const idObj = req.params.idSuperusuario
       const id = req.body
       Superusuarios.findOne({

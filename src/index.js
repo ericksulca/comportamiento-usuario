@@ -8,7 +8,7 @@ import http from 'http'
 import configDB from './libs/configDB'
 import middleware from './libs/middleware'
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8003
 let app = express()
 
 middleware(app)

@@ -22,7 +22,6 @@ export default (app, server) => {
 
   setInterval(function ping() {
     wssClient.clients.forEach(ws => {
-      console.log(ws.isAlive)
       if (!ws.isAlive) {
         let socketTodos = Object.values(userSockets)
         let arrIds = Object.keys(userSockets)
