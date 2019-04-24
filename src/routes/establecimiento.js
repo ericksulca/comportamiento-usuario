@@ -11,7 +11,7 @@ export default app => {
     .post((req, res) => {
       let establecimiento = new Establecimiento(req.body)
       establecimiento.save()
-        .then(result => res.json(result))
+        .then(() => res.status(200).json({ msg: "exito"}))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
 
@@ -36,4 +36,4 @@ export default app => {
         .then(() => res.sendStatus(204))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
-}
+}``
