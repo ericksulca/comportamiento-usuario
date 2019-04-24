@@ -27,11 +27,13 @@ import rutaHome from './routes/home'
 import rutaCliente from './routes/cliente'
 import rutaClienteWS from './routes/clienteWS'
 import rutaSuperusuario from './routes/superusuario'
+import rutaEstablecimiento from './routes/establecimiento'
 
 // RUTAS
 rutaHome(app)
 rutaCliente(app)
 rutaSuperusuario(app)
+rutaEstablecimiento(app)
 
 let server = http.Server(app)
 
