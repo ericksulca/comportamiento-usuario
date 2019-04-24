@@ -36,4 +36,4 @@ export default app => {
         .then(() => res.sendStatus(204))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
-}``
+}
