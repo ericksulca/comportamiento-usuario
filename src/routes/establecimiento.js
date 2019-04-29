@@ -1,5 +1,4 @@
 import Establecimiento from '../models/establecimiento'
-import Cliente from '../models/cliente';
 
 export default app => {
   app.route('/establecimiento-respuesta/')
