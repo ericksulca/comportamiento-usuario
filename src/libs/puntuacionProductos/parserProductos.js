@@ -3,7 +3,7 @@ const fs = require('fs')
 const fetch = require('node-fetch')
 const jsonexport = require('jsonexport')
 
-const url = 'http://localhost:3000/cliente-comportamiento/'
+const url = 'http://localhost:8003/cliente-comportamiento/'
 
 fetch(url)
   .then(res => res.json())

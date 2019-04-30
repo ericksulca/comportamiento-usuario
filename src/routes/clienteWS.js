@@ -76,7 +76,7 @@ export default (app, server) => {
 
   app.route('/ubicacion-repartidores/')
     .post((req, res) => {
-      const url_superusuarios = 'http://localhost:3000/superusuario/1'
+      const url_superusuarios = 'http://localhost:8003/superusuario/1'
       fetchSuperusuarios(url_superusuarios)
         .then(superusuarios => {
           superusuarios
