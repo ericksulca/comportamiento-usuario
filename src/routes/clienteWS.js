@@ -102,7 +102,7 @@ export default (app, server) => {
         res.status(204).json({ mensaje: 'exito' })
       } else {
         console.log('socket inválido o cerrado')
-        res.status(412).json({ mensaje: 'fracaso' })
+        res.status(204).json({ mensaje: 'fracaso socket invalido o cerrado' })
       }
     })
 }
