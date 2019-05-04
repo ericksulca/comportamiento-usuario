@@ -45,18 +45,29 @@ export default app => {
         {
           "horarioRespuesta._id": req.params.id,
         },
-        { $set: {
-          "horarioRespuesta.$.horaInicio": horaInicio,
-          "horarioRespuesta.$.horaFin": horaFin,
-          "horarioRespuesta.$.tiempoRespuesta": tiempoRespuesta
-        } }
+        {
+          $set: {
+            "horarioRespuesta.$.horaInicio": horaInicio,
+            "horarioRespuesta.$.horaFin": horaFin,
+            "horarioRespuesta.$.tiempoRespuesta": tiempoRespuesta
+          }
+        }
       ).exec()
         .then(result => res.json(result))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .delete((req, res) => {
       const id = req.params.id
-      Establecimiento.deleteOne({ id: id }).exec()
+      Establecimiento.updateOne(
+        {
+          "horarioRespuesta._id": id
+        },
+        {
+          $pull: {
+            "horarioRespuesta": { "horarioRespuesta": { _id: id } }
+          }
+        }
+      )
         .then(() => res.sendStatus(204))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
