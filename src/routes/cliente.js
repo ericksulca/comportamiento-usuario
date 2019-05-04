@@ -16,8 +16,7 @@ export default app => {
       if (clicksObj && !tagsObj && !productosObj) {
         const { nombreObjeto, cantidad } = clicksObj[0]
         Cliente.findOne({
-          "id": id,
-          "clicks.nombreObjeto": nombreObjeto
+          "id": id
         }).exec()
           .then(result => {
             if (result) {
@@ -28,19 +27,19 @@ export default app => {
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
-              Cliente.updateOne(
-                { "id": id },
-                { $push: { clicks: clicksObj } }
-              ).exec()
+              let cliente = new Cliente({
+                id: id,
+                clicks: clicksObject
+              })
+              cliente.save()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
-            }
+              }
           })
       } else if (!clicksObj && tagsObj && !productosObj) {
         const { nombreTag, puntuacion } = tagsObj[0]
         Cliente.findOne({
-          "id": id,
-          "tags.nombreTag": nombreTag
+          "id": id
         }).exec()
           .then(result => {
             if (result) {
@@ -51,19 +50,19 @@ export default app => {
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
-              Cliente.update(
-                { "id": id },
-                { $push: { tags: tagsObj } }
-              ).exec()
+              let cliente = new Cliente({
+                id: id,
+                tags: tagsObj
+              })
+              cliente.save()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
-            }
+              }
           })
       } else if (!clicksObj && !tagsObj && productosObj) {
         const { productoId, puntuacion } = productosObj[0]
         Cliente.findOne({
-          "id": id,
-          "productos.productoId": productoId
+          "id": id
         }).exec()
           .then(result => {
             if (result) {
@@ -74,13 +73,14 @@ export default app => {
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
             } else {
-              Cliente.updateOne(
-                { "id": id },
-                { $push: { productos: productosObj } }
-              ).exec()
+              let cliente = new Cliente({
+                id: id,
+                tags: tagsObj
+              })
+              cliente.save()
                 .then(result => res.json(result))
                 .catch(err => res.status(412).json({ msg: err.message }))
-            }
+              }
           })
       } else {
         let cliente = new Cliente({
