@@ -29,7 +29,7 @@ export default app => {
             } else {
               let cliente = new Cliente({
                 id: id,
-                clicks: clicksObject
+                clicks: clicksObj
               })
               cliente.save()
                 .then(result => res.json(result))
