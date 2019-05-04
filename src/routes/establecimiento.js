@@ -40,9 +40,7 @@ export default app => {
     })
     .put((req, res) => {
       const horarioRespuesta = req.body.horarioRespuesta
-      console.log(horarioRespuesta)
       const { horaInicio, horaFin, tiempoRespuesta } = horarioRespuesta[0]
-      console.log(horaInicio, horaFin, tiempoRespuesta)
       Establecimiento.updateOne(
         {
           "horarioRespuesta._id": req.params.id,
