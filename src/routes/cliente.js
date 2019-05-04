@@ -75,7 +75,7 @@ export default app => {
             } else {
               let cliente = new Cliente({
                 id: id,
-                tags: tagsObj
+                productosObjs: productosObj
               })
               cliente.save()
                 .then(result => res.json(result))
