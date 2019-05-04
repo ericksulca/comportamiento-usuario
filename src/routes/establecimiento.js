@@ -39,10 +39,19 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .put((req, res) => {
-      const horarioRespuesta = req.body
+      const horarioRespuesta = req.body.horarioRespuesta
+      console.log(horarioRespuesta)
+      const { horaInicio, horaFin, tiempoRespuesta } = horarioRespuesta[0]
+      console.log(horaInicio, horaFin, tiempoRespuesta)
       Establecimiento.updateOne(
-        { "id": req.params.id },
-        { $push: { horarioRespuesta: horarioRespuesta }}
+        {
+          "horarioRespuesta._id": req.params.id,
+        },
+        { $set: {
+          "horarioRespuesta.$.horaInicio": horaInicio,
+          "horarioRespuesta.$.horaFin": horaFin,
+          "horarioRespuesta.$.tiempoRespuesta": tiempoRespuesta
+        } }
       ).exec()
         .then(result => res.json(result))
         .catch(err => res.status(412).json({ msg: err.message }))
@@ -51,6 +60,13 @@ export default app => {
       const id = req.params.id
       Establecimiento.deleteOne({ id: id }).exec()
         .then(() => res.sendStatus(204))
+        .catch(err => res.status(412).json({ msg: err.message }))
+    })
+  app.route('/prueba/:id')
+    .get((req, res) => {
+      console.log(req.params.id)
+      Establecimiento.findOne({ "horarioRespuesta._id": req.params.id })
+        .then(result => res.json(result))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
 }
