@@ -8,11 +8,28 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
-      
-      let establecimiento = new Establecimiento(req.body)
-      establecimiento.save()
-        .then(() => res.status(200).json({ msg: "exito"}))
-        .catch(err => res.status(412).json({ msg: err.message }))
+      const { id, horarioRespuesta } = req.body
+      Establecimiento.findOne({
+        "id": id
+      }).exec()
+        .then(result => {
+          if (result) {
+            Establecimiento.updateOne(
+              { "id": id },
+              { $push: { horarioRespuesta: horarioRespuesta } }
+            ).exec()
+              .then(() => res.status(204).json({ msg: "horario guardado" }))
+              .catch(err => res.status(412).json({ msg: err.message }))
+          } else {
+            let establecimiento = new Establecimiento({
+              id: id,
+              horarioRespuesta: horarioRespuesta
+            })
+            establecimiento.save()
+              .then(() => res.status(200).json({ msg: "establecimiento y horario salvado"}))
+              .catch(err => res.status(412).json({ msg: err.message }))
+          }
+        })
     })
 
   app.route('/establecimiento-respuesta/:id')
