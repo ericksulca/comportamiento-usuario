@@ -8,6 +8,7 @@ export default app => {
         .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
+      
       let establecimiento = new Establecimiento(req.body)
       establecimiento.save()
         .then(() => res.status(200).json({ msg: "exito"}))
