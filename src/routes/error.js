@@ -12,10 +12,10 @@ export default app => {
       const { codigoError, mensaje } = req.body
       let errorLog = new ErrorLog({
         codigoError: codigoError,
-        mensage: mensaje
+        mensaje: mensaje
       })
       errorLog.save()
-        then(() => res.status(200).json({ msg: 'error guardado'}))
+        .then(() => res.status(200).json({ msg: 'error guardado'}))
         .catch(err => res.status(412).json({ msg: err.message }))
     })
 
