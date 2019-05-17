@@ -79,14 +79,10 @@ export default (app, server) => {
       const url_superusuarios = 'http://localhost:8003/superusuario/1'
       fetchSuperusuarios(url_superusuarios)
         .then(superusuarios => {
+          console.log(superusuarios)
           let sockets = superusuarios
-            .map(superusuarioId => {
-              console.log('superusuarioId', superusuarioId)
-              console.log('userSockets readyState', userSockets[superusuarioId].readyState)
-              console.log('ws.OPEN', ws.OPEN)
-              return userSockets[superusuarioId]
-            })
-          console.log('nuevo sockets', sockets)
+            .map(superusuarioId => userSockets[superusuarioId])
+          console.log(sockets)
           sockets = sockets
             .map(socket => {
               console.log('socket filter', socket.readyState)
