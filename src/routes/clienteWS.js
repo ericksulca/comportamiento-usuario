@@ -82,7 +82,8 @@ export default (app, server) => {
           superusuarios
             .map(superusuarioId => {
               console.log('superusuarioId', superusuarioId)
-              console.log('userSockets', userSockets[superusuarioId].readyState)
+              console.log('userSockets readyState', userSockets[superusuarioId].readyState)
+              console.log(ws.OPEN)
               userSockets[superusuarioId]
             })
             .filter(socket => {
