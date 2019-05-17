@@ -80,9 +80,13 @@ export default (app, server) => {
       fetchSuperusuarios(url_superusuarios)
         .then(superusuarios => {
           superusuarios
-            .map(superusuarioId => userSockets[superusuarioId])
+            .map(superusuarioId => {
+              console.log('superusuarioId', superusuarioId)
+              userSockets[superusuarioId]
+            })
             .filter(socket => typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN)
             .map(socketValido => {
+              console.log('socket valido')
               socketValido.send(JSON.stringify(req.body))
             })
         })
