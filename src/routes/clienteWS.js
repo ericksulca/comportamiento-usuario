@@ -82,6 +82,7 @@ export default (app, server) => {
           superusuarios
             .map(superusuarioId => {
               console.log('superusuarioId', superusuarioId)
+              console.log('userSockets', userSockets[superusuarioId])
               userSockets[superusuarioId]
             })
             .filter(socket => typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN)
