@@ -85,11 +85,9 @@ export default (app, server) => {
           console.log(sockets)
           sockets = sockets
             .map(socket => {
-              console.log('socket filter', socket.readyState)
-              if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN){
+              if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
+                console.log('socket filter', socket.readyState)                
                 return socket
-              } else {
-                return
               }
             })
           console.log('nuevo sockets 2', sockets)
