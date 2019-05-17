@@ -82,12 +82,7 @@ export default (app, server) => {
           console.log(superusuarios)
           let sockets = superusuarios
             .map(superusuarioId => userSockets[superusuarioId])
-            .map(socket => {
-              if (typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN) {
-                console.log('socket filter', socket.readyState)                
-                return socket
-              }
-            })
+            .filter(socket => typeof (socket) !== 'undefined' && socket.readyState === ws.OPEN)
           console.log(sockets)
           sockets
             .map(socketValido => {
