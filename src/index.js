@@ -29,6 +29,7 @@ import rutaClienteWS from './routes/clienteWS'
 import rutaSuperusuario from './routes/superusuario'
 import rutaEstablecimiento from './routes/establecimiento'
 import rutaErrorLog from './routes/error'
+import rutaProhibido from './routes/prohibidos'
 
 // RUTAS
 rutaHome(app)
@@ -36,6 +37,7 @@ rutaCliente(app)
 rutaSuperusuario(app)
 rutaEstablecimiento(app)
 rutaErrorLog(app)
+rutaProhibido(app)
 
 let server = http.Server(app)
 

@@ -4,7 +4,7 @@ const parse = require('csv-parse')
 const fetch = require('node-fetch')
 
 let csvData = []
-let url = "http://localhost:8000/producto/api/puntuacion/"
+let url = "http://localhost:8002/producto/api/puntuacion/"
 
 fs.createReadStream('./producto-mean.csv')
   .pipe(parse())
