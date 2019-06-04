@@ -3,7 +3,7 @@ import Prohibido from '../models/prohibidos'
 export default app => {
   app.route('/prohibido/')
     .get((req, res) => {
-      Prohibido.find({}).exec()
+      Prohibido.findOne({}).exec()
         .then(result => res.json(result))
         .catch(err => res.status(412).json({
           msg: err.message
