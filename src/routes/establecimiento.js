@@ -5,77 +5,107 @@ export default app => {
     .get((req, res) => {
       Establecimiento.find({}).exec()
         .then(result => res.json(result))
-        .catch(err => res.status(412).json({ msg: err.message }))
+        .catch(err => res.status(412).json({
+          msg: err.message
+        }))
     })
     .post((req, res) => {
-      const { id, horarioRespuesta } = req.body
+      const {
+        id,
+        horarioRespuesta
+      } = req.body
       Establecimiento.findOne({
-        "id": id
-      }).exec()
+          "id": id
+        }).exec()
         .then(result => {
           if (result) {
-            Establecimiento.updateOne(
-              { "id": id },
-              { $push: { horarioRespuesta: horarioRespuesta } }
-            ).exec()
-              .then(() => res.status(204).json({ msg: "horario guardado" }))
-              .catch(err => res.status(412).json({ msg: err.message }))
+            Establecimiento.updateOne({
+                "id": id
+              }, {
+                $push: {
+                  horarioRespuesta: horarioRespuesta
+                }
+              }).exec()
+              .then(() => res.status(204).json({
+                msg: "horario guardado"
+              }))
+              .catch(err => res.status(412).json({
+                msg: err.message
+              }))
           } else {
             let establecimiento = new Establecimiento({
               id: id,
               horarioRespuesta: horarioRespuesta
             })
             establecimiento.save()
-              .then(() => res.status(200).json({ msg: "establecimiento y horario salvado"}))
-              .catch(err => res.status(412).json({ msg: err.message }))
+              .then(() => res.status(200).json({
+                msg: "establecimiento y horario salvado"
+              }))
+              .catch(err => res.status(412).json({
+                msg: err.message
+              }))
           }
         })
     })
 
   app.route('/establecimiento-respuesta/:id')
     .get((req, res) => {
-      Establecimiento.findOne({ id: req.params.id }).exec()
+      Establecimiento.findOne({
+          id: req.params.id
+        }).exec()
         .then(result => res.json(result))
-        .catch(err => res.status(412).json({ msg: err.message }))
+        .catch(err => res.status(412).json({
+          msg: err.message
+        }))
     })
     .put((req, res) => {
       const horarioRespuesta = req.body.horarioRespuesta
-      const { horaInicio, horaFin, tiempoRespuesta } = horarioRespuesta[0]
-      Establecimiento.updateOne(
-        {
+      const {
+        horaInicio,
+        horaFin,
+        tiempoRespuesta
+      } = horarioRespuesta[0]
+      Establecimiento.updateOne({
           "horarioRespuesta._id": req.params.id,
-        },
-        {
+        }, {
           $set: {
             "horarioRespuesta.$.horaInicio": horaInicio,
             "horarioRespuesta.$.horaFin": horaFin,
             "horarioRespuesta.$.tiempoRespuesta": tiempoRespuesta
           }
-        }
-      ).exec()
+        }).exec()
         .then(result => res.json(result))
-        .catch(err => res.status(412).json({ msg: err.message }))
+        .catch(err => res.status(412).json({
+          msg: err.message
+        }))
     })
     .delete((req, res) => {
       const id = req.params.id
-      Establecimiento.updateOne(
-        {
+      Establecimiento.updateOne({
           "horarioRespuesta._id": id
-        },
-        {
+        }, {
           $pull: {
-            "horarioRespuesta": { "horarioRespuesta": { _id: id } }
+            "horarioRespuesta": {
+              "horarioRespuesta": {
+                _id: id
+              }
+            }
           }
-        }
-      )
+        })
         .then(() => res.sendStatus(204))
-        .catch(err => res.status(412).json({ msg: err.message }))
+        .catch(err => res.status(412).json({
+          msg: err.message
+        }))
     })
   app.route('/prueba/:id')
     .get((req, res) => {
       console.log(req.params.id)
-      Establecimiento.findOne({ "horarioRespuesta._id": req.params.id })
+      Establecimiento.findOne({
+          "horarioRespuesta._id": req.params.id
+        })
         .then(result => res.json(result))
-        .catch(err => res.status(412).json({ msg: err.message }))
+        .catch(err => res.status(412).json({
+          msg: err.message
+        }))
     })
 }
