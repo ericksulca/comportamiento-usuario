@@ -9,9 +9,10 @@ export default app => {
       .catch(err => res.status(412).json({ msg: err.message }))
     })
     .post((req, res) => {
-      const { mensaje } = req.body
+      const { mensaje, detalle } = req.body
       let errorLog = new ErrorLog({
-        mensaje: mensaje
+        mensaje: mensaje,
+        detalle: detalle
       })
       errorLog.save()
         .then(() => res.status(200).json({ msg: 'error guardado'}))
