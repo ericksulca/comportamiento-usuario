@@ -30,6 +30,7 @@ import rutaSuperusuario from './routes/superusuario'
 import rutaEstablecimiento from './routes/establecimiento'
 import rutaErrorLog from './routes/error'
 import rutaProhibido from './routes/prohibidos'
+import rutaPermitido from './routes/permitidos'
 
 // RUTAS
 rutaHome(app)
@@ -38,6 +39,7 @@ rutaSuperusuario(app)
 rutaEstablecimiento(app)
 rutaErrorLog(app)
 rutaProhibido(app)
+rutaPermitido(app)
 
 let server = http.Server(app)
 
