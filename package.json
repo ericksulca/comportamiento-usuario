@@ -32,7 +32,7 @@
     "express": "^4.16.4",
     "jsonexport": "^2.4.1",
     "mongoose": "^5.4.19",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.7",
     "ws": "^6.2.0"
   },
   "devDependencies": {
